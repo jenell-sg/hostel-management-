@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub — Student Dashboard</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <!-- Dashboard Styles -->
+  <link rel="stylesheet" href="user.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     TOPBAR
+     ══════════════════════════════════════ -->
+<header class="topbar">
+  <div class="tb-brand">
+    <div class="tb-icon">H</div>
+    <span class="tb-title">HostelHub</span>
+  </div>
+  <div class="tb-right">
+    <div class="tb-avatar" id="tbAvatar">?</div>
+    <span class="tb-uname"  id="tbName">Loading...</span>
+    <button class="btn-out" onclick="doLogout()">Sign Out</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR NAVIGATION
+       ══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sl">Main</div>
+    <button class="ni active" id="nav-profile"       onclick="show('profile')">
+      <span class="ni-ico">&#128100;</span><span>My Profile</span>
+    </button>
+    <button class="ni"        id="nav-hostel"        onclick="show('hostel')">
+      <span class="ni-ico">&#127968;</span><span>Hostel Info</span>
+    </button>
+
+    <div class="sl">Services</div>
+    <button class="ni"        id="nav-leave"         onclick="show('leave')">
+      <span class="ni-ico">&#128197;</span><span>Leave</span>
+      <span class="ni-badge"  id="lbadge" style="display:none">0</span>
+    </button>
+    <button class="ni"        id="nav-payments"      onclick="show('payments')">
+      <span class="ni-ico">&#128179;</span><span>Payments</span>
+    </button>
+    <button class="ni"        id="nav-complaints"    onclick="show('complaints')">
+      <span class="ni-ico">&#128227;</span><span>Complaints</span>
+    </button>
+
+    <div class="sl">Account</div>
+    <button class="ni"        id="nav-notifications" onclick="show('notifications')">
+      <span class="ni-ico">&#128276;</span><span>Notifications</span>
+      <span class="ni-badge"  id="nbadge">2</span>
+    </button>
+    <button class="ni"        id="nav-account"       onclick="show('account')">
+      <span class="ni-ico">&#128274;</span><span>Account</span>
+    </button>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+       ══════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- NOT SIGNED IN FALLBACK -->
+    <div class="no-session" id="noSession">
+      <div style="font-size:48px">&#128274;</div>
+      <h2>Not signed in</h2>
+      <p>Please register and complete the survey to access your dashboard.</p>
+      <a href="../Login Page/index.html">Go to Login</a>
+    </div>
+
+    <!-- ══════════ 1. MY PROFILE ══════════ -->
+    <div class="panel active" id="panel-profile">
+
+      <!-- Hero Banner -->
+      <div class="profile-hero">
+        <div class="hero-av" id="heroAv">?</div>
+        <div class="hero-info">
+          <h2 id="heroName">—</h2>
+          <div class="sub" id="heroEmail">—</div>
+          <div class="hero-chips">
+            <span class="hchip" id="heroDept">—</span>
+            <span class="hchip" id="heroCourse">—</span>
+            <span class="hchip" id="heroSem">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Details Card -->
+      <div class="card">
+        <div class="ch">
+          <div class="ct"><div class="ci">&#128100;</div>Personal Details</div>
+          <span class="badge bo" id="d-sid">ID: —</span>
+        </div>
+        <div class="dg">
+          <div><div class="dl">Full Name</div>        <div class="dv" id="d-name">—</div></div>
+          <div><div class="dl">Roll Number</div>      <div class="dv" id="d-roll">—</div></div>
+          <div><div class="dl">Email</div>            <div class="dv" id="d-email">—</div></div>
+          <div><div class="dl">Phone Number</div>     <div class="dv" id="d-phone">—</div></div>
+          <div><div class="dl">Gender</div>           <div class="dv" id="d-gender">—</div></div>
+          <div><div class="dl">Date of Birth</div>    <div class="dv" id="d-dob">—</div></div>
+          <div style="grid-column:1/-1">
+            <div class="dl">Address</div>
+            <div class="dv" id="d-addr">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic Details Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#127979;</div>Academic Details</div></div>
+        <div class="dg">
+          <div><div class="dl">College / University</div> <div class="dv" id="d-college">—</div></div>
+          <div><div class="dl">Department</div>           <div class="dv" id="d-dept">—</div></div>
+          <div><div class="dl">Course / Program</div>     <div class="dv" id="d-course">—</div></div>
+          <div><div class="dl">Semester</div>             <div class="dv" id="d-sem">—</div></div>
+          <div><div class="dl">Academic Year</div>        <div class="dv" id="d-year">—</div></div>
+        </div>
+      </div>
+
+      <!-- Health & Emergency Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128138;</div>Health &amp; Emergency</div></div>
+        <div class="dg">
+          <div><div class="dl">Blood Group</div>      <div class="dv" id="d-blood">—</div></div>
+          <div><div class="dl">Allergies</div>        <div class="dv" id="d-allergy">—</div></div>
+          <div><div class="dl">Guardian Name</div>    <div class="dv" id="d-guardian">—</div></div>
+          <div><div class="dl">Guardian Contact</div> <div class="dv" id="d-gcontact">—</div></div>
+          <div><div class="dl">Relationship</div>     <div class="dv" id="d-relation">—</div></div>
+          <div><div class="dl">Medical Conditions</div><div class="dv" id="d-medical">—</div></div>
+        </div>
+      </div>
+    </div><!-- /panel-profile -->
+
+    <!-- ══════════ 2. HOSTEL INFO ══════════ -->
+    <div class="panel" id="panel-hostel">
+      <div class="ph">
+        <h1>Hostel Information</h1>
+        <p>Your room and hostel allocation details</p>
+      </div>
+
+      <!-- Room Hero -->
+      <div class="room-card">
+        <div>
+          <div class="room-num" id="h-room">—</div>
+          <div class="room-lbl">Room Number</div>
+        </div>
+        <div style="text-align:right">
+          <span class="badge bg"><span class="bdot"></span>Active</span>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:8px" id="h-block">Block: —</div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="g3">
+        <div class="sm">
+          <div class="sm-lbl">Room Type</div>
+          <div class="sm-val" id="h-rtype"   style="font-size:18px;margin-top:4px">—</div>
+        </div>
+        <div class="sm">
+          <div class="sm-lbl">Sharing Type</div>
+          <div class="sm-val" id="h-sharing" style="font-size:18px;margin-top:4px">—</div>
+        </div>
+        <div class="sm">
+          <div class="sm-lbl">Floor Preference</div>
+          <div class="sm-val" id="h-floor"   style="font-size:18px;margin-top:4px">—</div>
+        </div>
+      </div>
+
+      <!-- Stay Details Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128203;</div>Stay &amp; Allocation Details</div></div>
+        <div class="dg">
+          <div><div class="dl">Room ID</div>       <div class="dv" id="h-rid">—</div></div>
+          <div><div class="dl">Hostel Block</div>  <div class="dv" id="h-blk2">—</div></div>
+          <div><div class="dl">Check-in Date</div> <div class="dv" id="h-checkin">—</div></div>
+          <div><div class="dl">Hostel Status</div>
+            <div class="dv"><span class="badge bg"><span class="bdot"></span>Active</span></div>
+          </div>
+          <div><div class="dl">Food Type</div>     <div class="dv" id="h-food">—</div></div>
+          <div><div class="dl">Hostel Type</div>   <div class="dv" id="h-htype">—</div></div>
+        </div>
+      </div>
+    </div><!-- /panel-hostel -->
+
+    <!-- ══════════ 3. LEAVE MANAGEMENT ══════════ -->
+    <div class="panel" id="panel-leave">
+      <div class="ph">
+        <h1>Leave Management</h1>
+        <p>Apply for leave and track your history</p>
+      </div>
+
+      <div class="alert alert-info">
+        &#8505;&nbsp; Leave applications are reviewed by the warden within 24 hours.
+        Apply at least 2 days in advance.
+      </div>
+
+      <!-- Apply Form Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128196;</div>Apply for Leave</div></div>
+
+        <div class="fr">
+          <div class="fg">
+            <label class="fl">Leave Type *</label>
+            <select class="fs" id="ltype">
+              <option value="">Select type</option>
+              <option>Home</option>
+              <option>Medical</option>
+              <option>Emergency</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl">Start Date *</label>
+            <input type="date" class="fi" id="lstart"/>
+          </div>
+        </div>
+
+        <div class="fr">
+          <div class="fg">
+            <label class="fl">End Date *</label>
+            <input type="date" class="fi" id="lend"/>
+          </div>
+          <div class="fg"><!-- spacer --></div>
+        </div>
+
+        <div class="fg">
+          <label class="fl">Reason *</label>
+          <textarea class="ft" id="lreason" placeholder="Briefly describe your reason for leave..."></textarea>
+        </div>
+
+        <button class="bp-btn" onclick="submitLeave()">&#128228; Submit Application</button>
+      </div>
+
+      <!-- History Table Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128203;</div>Leave History</div></div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Leave ID</th>
+                <th>Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Admin Remarks</th>
+              </tr>
+            </thead>
+            <tbody id="leaveBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /panel-leave -->
+
+    <!-- ══════════ 4. PAYMENTS ══════════ -->
+    <div class="panel" id="panel-payments">
+      <div class="ph">
+        <h1>Payments &amp; Fees</h1>
+        <p>Track your hostel fee payments and dues</p>
+      </div>
+
+      <!-- Summary Stats -->
+      <div class="g3">
+        <div class="sm" style="border-left:3px solid var(--green)">
+          <div class="sm-lbl">Total Paid</div>
+          <div class="sm-val" id="totalPaid">₹0</div>
+          <div class="sm-sub">This academic year</div>
+        </div>
+        <div class="sm" style="border-left:3px solid var(--red)">
+          <div class="sm-lbl">Pending Dues</div>
+          <div class="sm-val" id="totalDue">₹18,000</div>
+          <div class="sm-sub">Amount due</div>
+        </div>
+        <div class="sm" style="border-left:3px solid var(--orange)">
+          <div class="sm-lbl">Next Due Date</div>
+          <div class="sm-val" style="font-size:16px;margin-top:6px">Apr 30, 2026</div>
+          <div class="sm-sub">Semester fee</div>
+        </div>
+      </div>
+
+      <!-- Payment History Card -->
+      <div class="card">
+        <div class="ch">
+          <div class="ct"><div class="ci">&#128179;</div>Payment History</div>
+          <button class="bs-btn bsm" onclick="addDemoPayment()">+ Add Demo Entry</button>
+        </div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Payment ID</th>
+                <th>Receipt #</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+                <th>Method</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="payBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /panel-payments -->
+
+    <!-- ══════════ 5. COMPLAINTS ══════════ -->
+    <div class="panel" id="panel-complaints">
+      <div class="ph">
+        <h1>Complaints</h1>
+        <p>Report hostel issues and track resolutions</p>
+      </div>
+
+      <!-- Raise Complaint Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128227;</div>Raise a Complaint</div></div>
+
+        <div class="fr">
+          <div class="fg">
+            <label class="fl">Complaint Type *</label>
+            <select class="fs" id="ctype">
+              <option value="">Select type</option>
+              <option>Plumbing</option>
+              <option>Electrical</option>
+              <option>Cleanliness</option>
+              <option>Furniture</option>
+              <option>Internet / WiFi</option>
+              <option>Food Quality</option>
+              <option>Security</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl">Complaint Date *</label>
+            <input type="date" class="fi" id="cdate"/>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label class="fl">Description *</label>
+          <textarea class="ft" id="cdesc" placeholder="Describe the issue clearly..."></textarea>
+        </div>
+
+        <button class="bp-btn" onclick="submitComplaint()">&#128228; Submit Complaint</button>
+      </div>
+
+      <!-- Complaint History Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128203;</div>Complaint History</div></div>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr>
+                <th>Complaint ID</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Resolution Notes</th>
+              </tr>
+            </thead>
+            <tbody id="compBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /panel-complaints -->
+
+    <!-- ══════════ 6. NOTIFICATIONS ══════════ -->
+    <div class="panel" id="panel-notifications">
+      <div class="ph">
+        <h1>Notifications</h1>
+        <p>Alerts and updates from hostel administration</p>
+      </div>
+
+      <div class="card">
+        <div class="ch">
+          <div class="ct"><div class="ci">&#128276;</div>All Notifications</div>
+          <button class="bs-btn bsm" onclick="markAllRead()">Mark all read</button>
+        </div>
+
+        <div id="notifList">
+          <!-- Notification 1 -->
+          <div class="ni-item">
+            <div><div class="ndot" id="nd1"></div></div>
+            <div>
+              <div class="ntype" style="color:var(--orange)">GENERAL</div>
+              <div class="nm">Welcome to HostelHub! Your profile has been set up successfully. Please review your hostel allocation details.</div>
+              <div class="nmeta" id="nn1">Today</div>
+            </div>
+          </div>
+          <!-- Notification 2 -->
+          <div class="ni-item">
+            <div><div class="ndot" id="nd2"></div></div>
+            <div>
+              <div class="ntype" style="color:var(--blue)">PAYMENT</div>
+              <div class="nm">Your hostel fee for Semester 1 is due on <strong>April 30, 2026</strong>. Please pay before the due date to avoid a late fee.</div>
+              <div class="nmeta">Today</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /panel-notifications -->
+
+    <!-- ══════════ 7. ACCOUNT ══════════ -->
+    <div class="panel" id="panel-account">
+      <div class="ph">
+        <h1>Account &amp; Security</h1>
+        <p>Manage your login details and account settings</p>
+      </div>
+
+      <!-- Login Details Card -->
+      <div class="card">
+        <div class="ch"><div class="ct"><div class="ci">&#128274;</div>Login Details</div></div>
+
+        <div class="sec-row">
+          <div><div class="sec-lbl">Username / Email</div><div class="sec-sub" id="acc-email">—</div></div>
+          <span class="badge bg">Verified</span>
+        </div>
+        <div class="sec-row">
+          <div><div class="sec-lbl">Password</div><div class="sec-sub" id="acc-pass">••••••••</div></div>
+          <button class="bs-btn bsm" onclick="togglePwCard()">Change</button>
+        </div>
+        <div class="sec-row">
+          <div><div class="sec-lbl">Role</div><div class="sec-sub">Resident (Student)</div></div>
+          <span class="badge bo">User</span>
+        </div>
+        <div class="sec-row">
+          <div><div class="sec-lbl">Account Status</div><div class="sec-sub">Your account is active and verified</div></div>
+          <span class="badge bg"><span class="bdot"></span>Active</span>
+        </div>
+        <div class="sec-row">
+          <div><div class="sec-lbl">Last Login</div><div class="sec-sub" id="acc-login">—</div></div>
+        </div>
+      </div>
+
+      <!-- Change Password Card (hidden by default) -->
+      <div class="card" id="pwCard" style="display:none">
+        <div class="ch"><div class="ct"><div class="ci">&#128272;</div>Change Password</div></div>
+        <div class="fg">
+          <label class="fl">Current Password</label>
+          <input type="password" class="fi" id="cpw" placeholder="Enter current password"/>
+        </div>
+        <div class="fr">
+          <div class="fg">
+            <label class="fl">New Password</label>
+            <input type="password" class="fi" id="npw" placeholder="New password (min 6 chars)"/>
+          </div>
+          <div class="fg">
+            <label class="fl">Confirm New Password</label>
+            <input type="password" class="fi" id="cnpw" placeholder="Repeat new password"/>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="bp-btn" onclick="changePassword()">Update Password</button>
+          <button class="bs-btn" onclick="togglePwCard()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Danger Zone Card -->
+      <div class="card" style="border-color:var(--red-border)">
+        <div class="ch">
+          <div class="ct" style="color:var(--red)">
+            <div class="ci" style="background:var(--red-bg);border-color:var(--red-border)">&#9888;</div>
+            Danger Zone
+          </div>
+        </div>
+        <div class="sec-row">
+          <div><div class="sec-lbl">Sign Out</div><div class="sec-sub">Sign out from this device</div></div>
+          <button class="bd-btn bsm" onclick="doLogout()">Sign Out</button>
+        </div>
+      </div>
+    </div><!-- /panel-account -->
+
+  </main>
+</div><!-- /layout -->
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast">
+  <span id="tchk" style="font-size:16px">&#10003;</span>
+  <span id="tmsg">Done!</span>
+</div>
+
+<!-- Dashboard Logic -->
+<script src="user.js"></script>
+
+</body>
+</html>

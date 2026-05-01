@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub — Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     TOPBAR
+     ════════════════════════════════════════ -->
+<header class="topbar">
+  <div class="tb-brand">
+    <div class="tb-logo">H</div>
+    <span class="tb-title">HostelHub</span>
+    <span class="tb-badge">ADMIN</span>
+  </div>
+  <div class="tb-center">
+    <div class="tb-search">
+      <span class="tb-search-ico">🔍</span>
+      <input type="text" placeholder="Search students, rooms, leaves..." onkeyup="if(event.key==='Enter')globalSearch(this.value)"/>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-icon-btn" onclick="showPanel('notifications')" title="Notifications">
+      🔔<div class="tb-notif-dot"></div>
+    </div>
+    <div class="tb-admin">
+      <div class="tb-av">A</div>
+      <div>
+        <div class="tb-aname">Admin</div>
+        <div class="tb-arole">Super Admin</div>
+      </div>
+    </div>
+    <button class="btn-secondary btn-sm" onclick="doLogout()">Sign Out</button>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     SIDEBAR
+     ════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sl">Overview</div>
+  <button class="nav-item active" id="nav-dashboard"     onclick="showPanel('dashboard')">
+    <span class="ni-ico">📊</span><span>Dashboard</span>
+  </button>
+
+  <div class="sl">Management</div>
+  <button class="nav-item" id="nav-students"     onclick="showPanel('students')">
+    <span class="ni-ico">👥</span><span>Students</span>
+  </button>
+  <button class="nav-item" id="nav-rooms"        onclick="showPanel('rooms')">
+    <span class="ni-ico">🏨</span><span>Rooms</span>
+  </button>
+  <button class="nav-item" id="nav-leave"        onclick="showPanel('leave')">
+    <span class="ni-ico">📅</span><span>Leave</span>
+    <span class="ni-badge" id="nav-leave-badge" style="display:none">0</span>
+  </button>
+  <button class="nav-item" id="nav-payments"     onclick="showPanel('payments')">
+    <span class="ni-ico">💰</span><span>Payments</span>
+  </button>
+  <button class="nav-item" id="nav-complaints"   onclick="showPanel('complaints')">
+    <span class="ni-ico">📢</span><span>Complaints</span>
+  </button>
+  <button class="nav-item" id="nav-fees"         onclick="showPanel('fees')">
+    <span class="ni-ico">🏷️</span><span>Fee Structure</span>
+  </button>
+
+  <div class="sl">System</div>
+  <button class="nav-item" id="nav-database"     onclick="showPanel('database')">
+    <span class="ni-ico">🗄️</span><span>Database</span>
+  </button>
+  <button class="nav-item" id="nav-notifications" onclick="showPanel('notifications')">
+    <span class="ni-ico">🔔</span><span>Notifications</span>
+  </button>
+  <button class="nav-item" id="nav-reports"      onclick="showPanel('reports')">
+    <span class="ni-ico">📑</span><span>Reports</span>
+  </button>
+</aside>
+
+<!-- ════════════════════════════════════════
+     MAIN CONTENT
+     ════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ══════════ 1. DASHBOARD ══════════ -->
+  <div class="panel active" id="panel-dashboard">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Dashboard</h1>
+        <p>Welcome back, Admin. Here's what's happening today.</p>
+      </div>
+    </div>
+
+    <!-- Stat Cards Row 1 -->
+    <div class="stats-grid">
+      <div class="stat-card orange">
+        <div class="sc-icon orange">👥</div>
+        <div class="sc-val" id="dash-students">0</div>
+        <div class="sc-label">Total Students</div>
+        <div class="sc-sub" id="dash-active">0 active</div>
+      </div>
+      <div class="stat-card green">
+        <div class="sc-icon green">🏨</div>
+        <div class="sc-val" id="dash-occupied">0</div>
+        <div class="sc-label">Occupied Rooms</div>
+        <div class="sc-sub" id="dash-vacant">0 vacant</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="sc-icon blue">📅</div>
+        <div class="sc-val" id="dash-leaves">0</div>
+        <div class="sc-label">Pending Leaves</div>
+        <div class="sc-sub">Awaiting approval</div>
+      </div>
+      <div class="stat-card red">
+        <div class="sc-icon red">📢</div>
+        <div class="sc-val" id="dash-complaints">0</div>
+        <div class="sc-label">Open Complaints</div>
+        <div class="sc-sub">Need attention</div>
+      </div>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card yellow">
+        <div class="sc-icon yellow">💰</div>
+        <div class="sc-val" id="dash-fees">₹0</div>
+        <div class="sc-label">Total Collected</div>
+        <div class="sc-sub">All time</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="sc-icon purple">🏠</div>
+        <div class="sc-val" id="dash-rooms">0</div>
+        <div class="sc-label">Total Rooms</div>
+        <div class="sc-sub">Across all blocks</div>
+      </div>
+      <div class="stat-card cyan">
+        <div class="sc-icon cyan">📈</div>
+        <div style="margin-bottom:8px">
+          <div class="sc-val" id="occupancyPct">0%</div>
+          <div class="sc-label">Occupancy Rate</div>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="occupancyBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Lower Dashboard: Pending Leaves + Complaints -->
+    <div class="g2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon">📅</div>Pending Leave Requests</div>
+          <button class="btn-secondary btn-sm" onclick="showPanel('leave')">View All →</button>
+        </div>
+        <div id="recentLeavesList"><div style="padding:20px;color:var(--text-dim);text-align:center">Loading...</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon">📢</div>Open Complaints</div>
+          <button class="btn-secondary btn-sm" onclick="showPanel('complaints')">View All →</button>
+        </div>
+        <div id="recentComplaintsList"><div style="padding:20px;color:var(--text-dim);text-align:center">Loading...</div></div>
+      </div>
+    </div>
+  </div><!-- /panel-dashboard -->
+
+  <!-- ══════════ 2. STUDENTS ══════════ -->
+  <div class="panel" id="panel-students">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Student Management</h1>
+        <p id="studentCount">Manage all registered students</p>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-primary" onclick="openAddStudentModal()">+ Add Student</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Search name, email, roll..." oninput="loadStudents(this.value.toLowerCase())"/>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Student ID</th>
+              <th>Roll No.</th>
+              <th>Department</th>
+              <th>Semester</th>
+              <th>Status</th>
+              <th>Survey</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /panel-students -->
+
+  <!-- ══════════ 3. ROOMS ══════════ -->
+  <div class="panel" id="panel-rooms">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Room Management</h1>
+        <p>Manage hostel rooms, allocations and occupancy</p>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-primary" onclick="openAddRoomModal()">+ Add Room</button>
+      </div>
+    </div>
+
+    <!-- Room Stats -->
+    <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stat-card green" style="padding:16px 18px">
+        <div class="sc-label">Total Rooms</div><div class="sc-val" id="roomTotal">—</div>
+      </div>
+      <div class="stat-card orange" style="padding:16px 18px">
+        <div class="sc-label">Occupied</div><div class="sc-val" id="roomOccupied">—</div>
+      </div>
+      <div class="stat-card cyan" style="padding:16px 18px">
+        <div class="sc-label">Vacant</div><div class="sc-val" id="roomVacant">—</div>
+      </div>
+      <div class="stat-card yellow" style="padding:16px 18px">
+        <div class="sc-label">Maintenance</div><div class="sc-val" id="roomMaint">—</div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="loadRooms('B-Block')">Boys Hostel</button>
+        <button class="filter-btn" onclick="loadRooms('G-Block')">Girls Hostel</button>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-btn" onclick="loadRooms('Vacant')">Vacant</button>
+        <button class="filter-btn" onclick="loadRooms('Occupied')">Occupied</button>
+        <button class="filter-btn" onclick="loadRooms('AC')">AC</button>
+        <button class="filter-btn" onclick="loadRooms('Non-AC')">Non-AC</button>
+        <button class="filter-btn" onclick="loadRooms('First')">1st Floor</button>
+        <button class="filter-btn" onclick="loadRooms('Second')">2nd Floor</button>
+        <button class="filter-btn" onclick="loadRooms('Third')">3rd Floor</button>
+        <select class="form-select" style="padding: 6px 12px; border-radius: 20px; font-size: 13.5px; margin-left:8px; border:1px solid var(--border);" onchange="if(this.value) loadRooms(this.value)">
+           <option value="">More Floors...</option>
+           <option value="Fourth">4th Floor</option>
+           <option value="Fifth">5th Floor</option>
+           <option value="Sixth">6th Floor</option>
+           <option value="Seventh">7th Floor</option>
+           <option value="Eighth">8th Floor</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="room-grid" id="roomGrid"></div>
+  </div><!-- /panel-rooms -->
+
+  <!-- ══════════ 4. LEAVE MANAGEMENT ══════════ -->
+  <div class="panel" id="panel-leave">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Leave Management</h1>
+        <p>Review, approve, or reject student leave applications</p>
+      </div>
+    </div>
+
+    <!-- Leave Stats -->
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+      <div class="stat-card orange" style="padding:14px 18px">
+        <div class="sc-label">Total</div><div class="sc-val" id="lf-all">0</div>
+      </div>
+      <div class="stat-card yellow" style="padding:14px 18px">
+        <div class="sc-label">Pending</div><div class="sc-val" id="lf-pend">0</div>
+      </div>
+      <div class="stat-card green" style="padding:14px 18px">
+        <div class="sc-label">Approved</div><div class="sc-val" id="lf-appr">0</div>
+      </div>
+      <div class="stat-card red" style="padding:14px 18px">
+        <div class="sc-label">Rejected</div><div class="sc-val" id="lf-rej">0</div>
+      </div>
+    </div>
+
+    <!-- Filter + Search -->
+    <div class="filter-bar">
+      <button class="filter-btn leave-filter-btn active" data-filter="all"      onclick="loadLeaves('all')">All</button>
+      <button class="filter-btn leave-filter-btn"        data-filter="Pending"  onclick="loadLeaves('Pending')">Pending</button>
+      <button class="filter-btn leave-filter-btn"        data-filter="Approved" onclick="loadLeaves('Approved')">Approved</button>
+      <button class="filter-btn leave-filter-btn"        data-filter="Rejected" onclick="loadLeaves('Rejected')">Rejected</button>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="leaveSearch" placeholder="Search student..." oninput="loadLeaves()"/>
+      </div>
+    </div>
+
+    <div id="leaveContainer"></div>
+  </div><!-- /panel-leave -->
+
+  <!-- ══════════ 5. PAYMENTS ══════════ -->
+  <div class="panel" id="panel-payments">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Fee &amp; Payment Management</h1>
+        <p>Track all student payments and dues</p>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-primary" onclick="openAddPaymentModal()">+ Record Payment</button>
+      </div>
+    </div>
+
+    <!-- Payment Stats -->
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+      <div class="stat-card green" style="padding:16px 18px">
+        <div class="sc-label">Total Collected</div><div class="sc-val" id="pay-total">₹0</div>
+      </div>
+      <div class="stat-card orange" style="padding:16px 18px">
+        <div class="sc-label">Total Records</div><div class="sc-val" id="pay-count">0</div>
+      </div>
+      <div class="stat-card red" style="padding:16px 18px">
+        <div class="sc-label">Pending</div><div class="sc-val" id="pay-pending">0</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <button class="filter-btn pay-filter-btn active" data-filter="all"     onclick="loadPayments('all')">All</button>
+      <button class="filter-btn pay-filter-btn"        data-filter="paid"    onclick="loadPayments('paid')">Paid</button>
+      <button class="filter-btn pay-filter-btn"        data-filter="pending" onclick="loadPayments('pending')">Pending</button>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="paySearch" placeholder="Search student..." oninput="loadPayments()"/>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Payment ID</th><th>Student</th><th>Receipt #</th>
+              <th>Amount</th><th>Date</th><th>Method</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="paymentTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /panel-payments -->
+
+  <!-- ══════════ 6. COMPLAINTS ══════════ -->
+  <div class="panel" id="panel-complaints">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Complaint Management</h1>
+        <p>View, assign, and resolve student complaints</p>
+      </div>
+    </div>
+
+    <!-- Complaint Stats -->
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+      <div class="stat-card orange" style="padding:14px 18px"><div class="sc-label">Total</div><div class="sc-val" id="comp-total">0</div></div>
+      <div class="stat-card red"    style="padding:14px 18px"><div class="sc-label">Open</div><div class="sc-val" id="comp-open">0</div></div>
+      <div class="stat-card yellow" style="padding:14px 18px"><div class="sc-label">In Progress</div><div class="sc-val" id="comp-inprog">0</div></div>
+      <div class="stat-card green"  style="padding:14px 18px"><div class="sc-label">Resolved</div><div class="sc-val" id="comp-resolved">0</div></div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn comp-filter-btn active" data-filter="all"         onclick="loadComplaints('all')">All</button>
+      <button class="filter-btn comp-filter-btn"        data-filter="Open"        onclick="loadComplaints('Open')">Open</button>
+      <button class="filter-btn comp-filter-btn"        data-filter="In Progress" onclick="loadComplaints('In Progress')">In Progress</button>
+      <button class="filter-btn comp-filter-btn"        data-filter="Resolved"    onclick="loadComplaints('Resolved')">Resolved</button>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="compSearch" placeholder="Search student or type..." oninput="loadComplaints()"/>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Student</th><th>Type</th><th>Date</th>
+              <th>Description</th><th>Status</th><th>Notes</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="compTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /panel-complaints -->
+
+  <!-- ══════════ 7. FEE STRUCTURE ══════════ -->
+  <div class="panel" id="panel-fees">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Fee Structure</h1>
+        <p>Set and manage hostel fee amounts for each room category</p>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon">🏷️</div>Current Fee Structure</div>
+        </div>
+        <div id="feeList"></div>
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)" id="feeTotalLabel"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon">💰</div>Fee Collection Summary</div>
+        </div>
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-family:'DM Serif Display',serif;font-size:48px;color:var(--orange)" id="feeSummaryTotal">—</div>
+          <div style="font-size:14px;color:var(--text-muted);margin-top:6px">Total collected this year</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--green)" id="paidCount">—</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:3px">Payments Received</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--red)" id="pendCount">—</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:3px">Pending Dues</div>
+          </div>
+        </div>
+        <script>
+          // Inline init for fee summary
+          setTimeout(function(){
+            var allP=JSON.parse(localStorage.getItem('hostelhub_userdata')||'{}');
+            var total=0,paid=0,pend=0;
+            Object.values(allP).forEach(function(d){
+              (d.payments||[]).forEach(function(p){
+                if(p.status==='Paid'){total+=p.amount||0;paid++;}
+                else pend++;
+              });
+            });
+            var e=document.getElementById('feeSumma]ryTotal');if(e)e.textContent='₹'+total.toLocaleString('en-IN');
+            var e2=document.getElementById('paidCount');if(e2)e2.textContent=paid;
+            var e3=document.getElementById('pendCount');if(e3)e3.textContent=pend;
+          },300);
+        </script>
+      </div>
+    </div>
+  </div><!-- /panel-fees -->
+
+  <!-- ══════════ 8. DATABASE ══════════ -->
+  <div class="panel" id="panel-database">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Database Viewer</h1>
+        <p id="dbCount">Full access to all student records</p>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-secondary" onclick="exportDatabase()">📥 Export JSON</button>
+        <button class="btn-danger" onclick="clearDatabase()">🗑️ Clear DB</button>
+      </div>
+    </div>
+
+    <!-- DB Summary Cards -->
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+      <div class="stat-card orange" style="padding:14px 18px"><div class="sc-label">Students</div><div class="sc-val" id="db-students-count">—</div></div>
+      <div class="stat-card blue"   style="padding:14px 18px"><div class="sc-label">Leave Records</div><div class="sc-val" id="db-leaves">—</div></div>
+      <div class="stat-card green"  style="padding:14px 18px"><div class="sc-label">Payment Records</div><div class="sc-val" id="db-payments">—</div></div>
+      <div class="stat-card red"    style="padding:14px 18px"><div class="sc-label">Complaint Records</div><div class="sc-val" id="db-comps">—</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><div class="card-icon">👥</div>Users Table</div>
+        <button class="btn-primary btn-sm" onclick="openAddStudentModal()">+ Add Record</button>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Student ID</th><th>Name</th><th>Email</th><th>Password</th>
+              <th>Roll No.</th><th>Department</th><th>Room</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dbTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /panel-database -->
+
+  <!-- ══════════ 9. NOTIFICATIONS ══════════ -->
+  <div class="panel" id="panel-notifications">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Notifications &amp; Alerts</h1>
+        <p>Send broadcasts and view system notifications</p>
+      </div>
+    </div>
+
+    <div class="g2" style="align-items:start">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon">📣</div>Send Broadcast</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notification Type</label>
+          <select class="form-select" id="broadcastType">
+            <option value="GENERAL">General</option>
+            <option value="PAYMENT">Payment Reminder</option>
+            <option value="LEAVE">Leave Update</option>
+            <option value="MAINTENANCE">Maintenance Alert</option>
+            <option value="EVENT">Event / Announcement</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message *</label>
+          <textarea class="form-textarea" id="broadcastMsg" placeholder="Type your announcement here..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="sendBroadcast()">📤 Send to All Students</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><div class="card-icon">🔔</div>Notification Log</div>
+        </div>
+        <div id="notifList"></div>
+      </div>
+    </div>
+  </div><!-- /panel-notifications -->
+
+  <!-- ══════════ 10. REPORTS ══════════ -->
+  <div class="panel" id="panel-reports">
+    <div class="ph">
+      <div class="ph-left">
+        <h1>Reports</h1>
+        <p>Generate and export system reports</p>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="stats-grid" style="margin-bottom:24px">
+      <div class="stat-card orange"><div class="sc-icon orange">👥</div><div class="sc-val" id="rpt-students">0</div><div class="sc-label">Total Students</div></div>
+      <div class="stat-card blue">  <div class="sc-icon blue">📅</div> <div class="sc-val" id="rpt-leaves">0</div>  <div class="sc-label">Total Leaves</div></div>
+      <div class="stat-card green"> <div class="sc-icon green">💰</div> <div class="sc-val" id="rpt-payments">₹0</div><div class="sc-label">Total Fees Collected</div></div>
+      <div class="stat-card red">   <div class="sc-icon red">📢</div>   <div class="sc-val" id="rpt-complaints">0</div><div class="sc-label">Total Complaints</div></div>
+    </div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-icon">📑</div>Export Reports</div></div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-weight:500;font-size:14px">Complete Database</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">All tables including users, rooms, payments</div></div>
+            <button class="btn-secondary btn-sm" onclick="exportReport('all')">📥 Export JSON</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-weight:500;font-size:14px">Student Report</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">All student profiles and details</div></div>
+            <button class="btn-secondary btn-sm" onclick="exportReport('students')">📥 Export</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-weight:500;font-size:14px">Leave Report</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">All leave applications with status</div></div>
+            <button class="btn-secondary btn-sm" onclick="exportReport('leaves')">📥 Export</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-weight:500;font-size:14px">Payment Report</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">All fee records and transaction history</div></div>
+            <button class="btn-secondary btn-sm" onclick="exportReport('payments')">📥 Export</button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0">
+            <div><div style="font-weight:500;font-size:14px">Complaint Report</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">All complaints with resolution details</div></div>
+            <button class="btn-secondary btn-sm" onclick="exportReport('complaints')">📥 Export</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-icon">📊</div>Quick Stats</div></div>
+        <div id="quickStatsContent">
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Students with survey completed</span><span id="rs-survey" style="font-weight:600">—</span></div>
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Approved leaves this session</span><span id="rs-approved" style="font-weight:600">—</span></div>
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Rejected leaves this session</span><span id="rs-rejected" style="font-weight:600">—</span></div>
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Resolved complaints</span><span id="rs-resolved" style="font-weight:600">—</span></div>
+          <div style="padding:12px 0;display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Rooms at full capacity</span><span id="rs-full" style="font-weight:600">—</span></div>
+        </div>
+        <script>
+          setTimeout(function(){
+            var users=JSON.parse(localStorage.getItem('hostelhub_users')||'[]');
+            var ud=JSON.parse(localStorage.getItem('hostelhub_userdata')||'{}');
+            var rooms=JSON.parse(localStorage.getItem('hostelhub_rooms')||'[]');
+            var allL=[],allC=[];
+            Object.values(ud).forEach(function(d){allL=allL.concat(d.leaves||[]);allC=allC.concat(d.complaints||[]);});
+            function s(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+            s('rs-survey',users.filter(function(u){return u.surveyCompleted;}).length);
+            s('rs-approved',allL.filter(function(l){return l.status==='Approved';}).length);
+            s('rs-rejected',allL.filter(function(l){return l.status==='Rejected';}).length);
+            s('rs-resolved',allC.filter(function(c){return c.status==='Resolved';}).length);
+            s('rs-full',rooms.filter(function(r){return r.status==='Occupied';}).length);
+          },400);
+        </script>
+      </div>
+    </div>
+  </div><!-- /panel-reports -->
+
+</main><!-- /main -->
+
+<!-- ════════════════════════════════════════
+     MODALS
+     ════════════════════════════════════════ -->
+
+<!-- View Student Modal -->
+<div class="modal-overlay" id="studentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="sm-title">Student Profile</div>
+      <button class="modal-close" onclick="closeModal('studentModal')">✕</button>
+    </div>
+    <div id="sm-body"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('studentModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal-overlay" id="addStudentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Student</div>
+      <button class="modal-close" onclick="closeModal('addStudentModal')">✕</button>
+    </div>
+    <form id="addStudentForm" onsubmit="return false">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="ns-name" placeholder="Student full name"/></div>
+        <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="ns-email" placeholder="student@email.com"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Password *</label><input type="password" class="form-input" id="ns-pass" placeholder="Set a password"/></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="ns-phone" placeholder="+91 xxxxx xxxxx"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Roll Number</label><input class="form-input" id="ns-roll" placeholder="Roll number"/></div>
+        <div class="form-group"><label class="form-label">Department</label><input class="form-input" id="ns-dept" placeholder="e.g. Computer Science"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Semester</label>
+          <select class="form-select" id="ns-sem">
+            <option value="">Select</option>
+            <option>Semester 1</option><option>Semester 2</option><option>Semester 3</option>
+            <option>Semester 4</option><option>Semester 5</option><option>Semester 6</option>
+            <option>Semester 7</option><option>Semester 8</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Gender</label>
+          <select class="form-select" id="ns-gender">
+            <option value="">Select</option>
+            <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addStudentModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewStudent()">Add Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div class="modal-overlay" id="editStudentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Student</div>
+      <button class="modal-close" onclick="closeModal('editStudentModal')">✕</button>
+    </div>
+    <input type="hidden" id="editStudentId"/>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="es-name"/></div>
+      <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="es-email"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Department</label><input class="form-input" id="es-dept"/></div>
+      <div class="form-group"><label class="form-label">Roll Number</label><input class="form-input" id="es-roll"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Semester</label><input class="form-input" id="es-sem"/></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="es-phone"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('editStudentModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveStudentEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Room Modal -->
+<div class="modal-overlay" id="addRoomModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Room</div>
+      <button class="modal-close" onclick="closeModal('addRoomModal')">✕</button>
+    </div>
+    <form id="addRoomForm" onsubmit="return false">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Room Number *</label><input class="form-input" id="nr-num" placeholder="e.g. 215"/></div>
+        <div class="form-group"><label class="form-label">Block</label>
+          <select class="form-select" id="nr-block"><option value="B-Block">B-Block (Boys)</option><option value="G-Block">G-Block (Girls)</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Floor</label>
+          <select class="form-select" id="nr-floor"><option>First</option><option>Second</option><option>Third</option><option>Fourth</option><option>Fifth</option><option>Sixth</option><option>Seventh</option><option>Eighth</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Room Type</label>
+          <select class="form-select" id="nr-type"><option value="AC">AC</option><option value="Non-AC">Non-AC</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Sharing Type</label>
+        <select class="form-select" id="nr-sharing"><option>Single</option><option>Double</option><option>Triple</option></select>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addRoomModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewRoom()">Add Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Room Modal -->
+<div class="modal-overlay" id="editRoomModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Room</div>
+      <button class="modal-close" onclick="closeModal('editRoomModal')">✕</button>
+    </div>
+    <input type="hidden" id="er-id"/>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Room Number *</label><input class="form-input" id="er-num"/></div>
+      <div class="form-group"><label class="form-label">Block</label>
+        <select class="form-select" id="er-block"><option value="B-Block">B-Block (Boys)</option><option value="G-Block">G-Block (Girls)</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Floor</label>
+        <select class="form-select" id="er-floor"><option>First</option><option>Second</option><option>Third</option><option>Fourth</option><option>Fifth</option><option>Sixth</option><option>Seventh</option><option>Eighth</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Room Type</label>
+        <select class="form-select" id="er-type"><option value="AC">AC</option><option value="Non-AC">Non-AC</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Sharing Type</label>
+        <select class="form-select" id="er-sharing"><option>Single</option><option>Double</option><option>Triple</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-select" id="er-status"><option>Vacant</option><option>Occupied</option><option>Maintenance</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('editRoomModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveRoomEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Room Modal -->
+<div class="modal-overlay" id="assignRoomModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="ar-roomLabel">Assign Room</div>
+      <button class="modal-close" onclick="closeModal('assignRoomModal')">✕</button>
+    </div>
+    <input type="hidden" id="ar-roomId"/>
+    <div class="form-group">
+      <label class="form-label">Select Student *</label>
+      <select class="form-select" id="ar-student"></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('assignRoomModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveRoomAssignment()">Assign Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Room To Student Modal -->
+<div class="modal-overlay" id="assignRoomToStudentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="arts-studentLabel">Assign Room</div>
+      <button class="modal-close" onclick="closeModal('assignRoomToStudentModal')">✕</button>
+    </div>
+    <input type="hidden" id="arts-studentId"/>
+    <div class="form-group">
+      <label class="form-label">Select Room *</label>
+      <select class="form-select" id="arts-room"></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('assignRoomToStudentModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveStudentRoomAssignment()">Assign Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Payment Modal -->
+<div class="modal-overlay" id="addPaymentModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Record Payment</div>
+      <button class="modal-close" onclick="closeModal('addPaymentModal')">✕</button>
+    </div>
+    <div class="form-group"><label class="form-label">Student *</label><select class="form-select" id="ap-student"></select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Amount (₹) *</label><input type="number" class="form-input" id="ap-amount" placeholder="e.g. 18000"/></div>
+      <div class="form-group"><label class="form-label">Payment Method</label>
+        <select class="form-select" id="ap-method">
+          <option>Cash</option><option>UPI</option><option>Net Banking</option><option>Card</option><option>Cheque</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Payment Date</label><input type="date" class="form-input" id="ap-date"/></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addPaymentModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewPayment()">Record Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toastIco" style="font-size:16px">✓</span>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<!-- Admin Dashboard Script -->
+<script src="admin.js"></script>
+
+<!-- Fix db-students-count id -->
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    // Patch dbTable count to correct element id
+    var orig = loadDatabase;
+    window._patchedLoad = true;
+    // Also fix db student count after loadDashboard
+    var origDash = loadDashboard;
+    loadDashboard = function(){
+      origDash();
+      var users = DB.getUsers();
+      var el = document.getElementById('db-students-count');
+      if(el) el.textContent = users.length;
+    };
+  });
+</script>
+
+</body>
+</html>

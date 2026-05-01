@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #f97316; --orange-dark: #ea6000; --orange-dim: rgba(249,115,22,0.12);
+      --orange-glow: rgba(249,115,22,0.25); --orange-border: rgba(249,115,22,0.3);
+      --bg: #ffffff; --surface: #ffffff; --surface2: #f5f5f5;
+      --text: #1a1a1a; --text-muted: #6b7280; --text-dim: #b0b7c3;
+      --border: #e5e7eb; --admin-accent: #c2410c; --admin-dim: rgba(194,65,12,0.1);
+      --danger: #ef4444; --success: #22c55e; --radius: 14px;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+    /* LEFT PANEL */
+    .left-panel {
+      width: 42%; position: relative; display: flex; flex-direction: column;
+      justify-content: space-between; padding: 48px 52px; overflow: hidden; height: 100vh;
+      background: linear-gradient(145deg, #f97316 0%, #ea6000 100%);
+    }
+    .left-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 10% 15%, rgba(255,255,255,0.18) 0%, transparent 55%),
+                  radial-gradient(ellipse 50% 50% at 85% 85%, rgba(0,0,0,0.08) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .grid-overlay {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 56px 56px; pointer-events: none;
+    }
+    .brand { position: relative; z-index: 2; }
+    .brand-icon {
+      width: 52px; height: 52px; background: rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.35); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif; font-size: 22px; color: #fff; margin-bottom: 20px;
+    }
+    .brand h1 { font-family: 'DM Serif Display', serif; font-size: 28px; color: #fff; }
+    .brand p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px; letter-spacing: 1px; text-transform: uppercase; }
+    .hero-text { position: relative; z-index: 2; }
+    .hero-text h2 { font-family: 'DM Serif Display', serif; font-size: 42px; line-height: 1.15; color: #fff; margin-bottom: 16px; }
+    .hero-text h2 em { font-style: italic; color: rgba(255,255,255,0.75); }
+    .hero-text p { font-size: 15px; color: rgba(255,255,255,0.72); line-height: 1.7; max-width: 340px; }
+    .stats { position: relative; z-index: 2; display: flex; gap: 32px; }
+    .stat-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: #fff; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
+    /* RIGHT PANEL */
+    .right-panel {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 40px 32px; background: #fff; height: 100vh; overflow-y: auto;
+    }
+    .login-box { width: 100%; max-width: 420px; }
+    .page-title { margin-bottom: 28px; }
+    .page-title h3 { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); margin-bottom: 6px; }
+    .page-title p { font-size: 14px; color: var(--text-muted); }
+    /* ROLE TOGGLE */
+    .role-toggle {
+      display: flex; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 4px; margin-bottom: 24px;
+    }
+    .role-btn {
+      flex: 1; padding: 10px 16px; border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-muted);
+    }
+    .role-btn.active[data-role="user"] { background: var(--orange-dim); color: var(--orange); box-shadow: inset 0 0 0 1px var(--orange-border); }
+    .role-btn.active[data-role="admin"] { background: var(--admin-dim); color: var(--admin-accent); box-shadow: inset 0 0 0 1px rgba(194,65,12,0.25); }
+    .admin-note {
+      display: none; align-items: center; gap: 10px; padding: 12px 14px;
+      background: rgba(194,65,12,0.07); border: 1px solid rgba(194,65,12,0.2);
+      border-radius: 10px; margin-bottom: 18px; font-size: 13px; color: var(--admin-accent);
+    }
+    body.admin-mode .admin-note { display: flex; }
+    body.admin-mode .register-link { display: none; }
+    /* FORM */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 7px; letter-spacing: 0.3px; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 12px 14px; background: var(--surface2);
+      border: 1.5px solid var(--border); border-radius: 10px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus { background: #fff; border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-dim); }
+    input::placeholder { color: var(--text-dim); }
+    .forgot { text-align: right; margin-top: -8px; margin-bottom: 16px; }
+    .forgot a { font-size: 13px; color: var(--text-muted); text-decoration: none; }
+    .forgot a:hover { color: var(--orange); }
+    /* BUTTONS */
+    .submit-btn, .register-submit {
+      width: 100%; padding: 14px; border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      color: #fff; box-shadow: 0 4px 14px var(--orange-glow); transition: all 0.2s;
+    }
+    .submit-btn:hover, .register-submit:hover { box-shadow: 0 6px 20px var(--orange-glow); opacity: 0.95; }
+    .submit-btn:active, .register-submit:active { transform: scale(0.985); }
+    body.admin-mode .submit-btn { background: linear-gradient(135deg, var(--admin-accent), #9a3412); box-shadow: 0 4px 14px rgba(194,65,12,0.3); }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+      color: var(--text-muted); margin-bottom: 24px; cursor: pointer;
+      background: none; border: none; padding: 0; font-family: 'DM Sans', sans-serif; transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--orange); }
+    /* DIVIDER */
+    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .divider span { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+    .register-link { text-align: center; font-size: 14px; color: var(--text-muted); }
+    .register-link a { color: var(--orange); font-weight: 600; text-decoration: none; }
+    .register-link a:hover { color: var(--orange-dark); }
+    /* PASSWORD STRENGTH */
+    .password-strength { margin-top: 8px; display: flex; gap: 4px; }
+    .strength-bar { height: 3px; flex: 1; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .strength-bar.weak { background: var(--danger); }
+    .strength-bar.fair { background: var(--orange); }
+    .strength-bar.strong { background: var(--success); }
+    .strength-label { font-size: 12px; color: var(--text-dim); margin-top: 5px; }
+    /* VIEWS */
+    .view { display: none; }
+    .view.active { display: block; }
+    /* SUCCESS */
+    .success-msg { display: none; flex-direction: column; align-items: center; text-align: center; padding: 32px 20px; }
+    .success-icon {
+      width: 60px; height: 60px; background: rgba(34,197,94,0.1); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: var(--success); margin-bottom: 18px; border: 1px solid rgba(34,197,94,0.3);
+    }
+    .success-msg h3 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); margin-bottom: 10px; }
+    .success-msg p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+    /* ERRORS */
+    .input-error { border-color: var(--danger) !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.1) !important; background: #fff5f5 !important; }
+    .error-msg { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--danger); margin-top: 6px; font-weight: 500; }
+    .err-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; border-radius: 50%; background: var(--danger);
+      color: #fff; font-size: 10px; font-weight: 800; flex-shrink: 0;
+    }
+    .form-banner { padding: 12px 16px; border-radius: 10px; font-size: 13.5px; line-height: 1.5; margin-bottom: 16px; }
+    .form-banner-error { background: #fff1f1; border: 1px solid rgba(239,68,68,0.3); color: #b91c1c; }
+    .form-banner-error a { color: var(--orange); font-weight: 600; text-decoration: underline; }
+    .form-banner strong { font-weight: 700; }
+    @media (max-width: 768px) {
+      body { flex-direction: column; height: auto; overflow: auto; }
+      .left-panel { width: 100%; height: auto; padding: 32px 28px; }
+      .right-panel { height: auto; padding: 32px 24px; }
+      .hero-text, .stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="grid-overlay"></div>
+    <div class="brand">
+      <div class="brand-icon">H</div>
+      <h1>HostelHub</h1>
+      <p>Management System</p>
+    </div>
+    <div class="hero-text">
+      <h2>Your home,<br/><em>managed</em><br/>seamlessly.</h2>
+      <p>Everything you need to manage hostel life — room bookings, payments, complaints, and more in one place.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">300+</div><div class="stat-label">Rooms</div></div>
+      <div class="stat"><div class="stat-num">1.2k</div><div class="stat-label">Residents</div></div>
+      <div class="stat"><div class="stat-num">99%</div><div class="stat-label">Uptime</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
+
+    <!-- LOGIN VIEW -->
+    <div class="login-box view active" id="loginView">
+      <div class="page-title">
+        <h3>Welcome back</h3>
+        <p>Sign in to your account to continue</p>
+      </div>
+      <div class="role-toggle">
+        <button class="role-btn active" data-role="user" onclick="switchRole('user')">Resident</button>
+        <button class="role-btn" data-role="admin" onclick="switchRole('admin')">Admin</button>
+      </div>
+      <div class="admin-note">Admin access is restricted to authorised personnel only.</div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password"/>
+      </div>
+      <div class="forgot"><a href="#">Forgot password?</a></div>
+      <button class="submit-btn" onclick="handleLogin()">Sign In</button>
+      <div class="divider"><span>New to HostelHub?</span></div>
+      <div class="register-link">
+        Don't have an account? <a href="#" onclick="showRegister(); return false;">Create one &rarr;</a>
+      </div>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div class="login-box view" id="registerView">
+      <button class="back-btn" onclick="showLogin()">&larr; Back to Login</button>
+      <div class="page-title">
+        <h3>Create Account</h3>
+        <p>Register as a new resident of HostelHub</p>
+      </div>
+      <div id="registerForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="e.g. Arjun Kumar"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" placeholder="Create a strong password" oninput="checkStrength(this.value)"/>
+          <div class="password-strength">
+            <div class="strength-bar" id="bar1"></div>
+            <div class="strength-bar" id="bar2"></div>
+            <div class="strength-bar" id="bar3"></div>
+            <div class="strength-bar" id="bar4"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel">Enter a password</div>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="regConfirmPassword" placeholder="Re-enter your password"/>
+        </div>
+        <button class="register-submit" onclick="handleRegister()">Create Account</button>
+        <div class="divider"><span>Already have an account?</span></div>
+        <div class="register-link" style="display:block;">
+          <a href="#" onclick="showLogin(); return false;">&larr; Sign In instead</a>
+        </div>
+      </div>
+      <div class="success-msg" id="successMsg">
+        <div class="success-icon">&#10003;</div>
+        <h3>Account Created!</h3>
+        <p>Redirecting to your survey...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ══════════════════════════════════════════
+    // DB LAYER — localStorage
+    // ══════════════════════════════════════════
+    const DB_KEY      = 'hostelhub_users';
+    const SESSION_KEY = 'hostelhub_session';
+
+    const DB = {
+      getAll() {
+        try { return JSON.parse(localStorage.getItem(DB_KEY)) || []; } catch(e) { return []; }
+      },
+      saveAll(users) {
+        try { localStorage.setItem(DB_KEY, JSON.stringify(users)); return true; } catch(e) { return false; }
+      },
+      findByEmail(email) {
+        return this.getAll().find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
+      },
+      findById(id) {
+        return this.getAll().find(u => u.id === id) || null;
+      },
+      register(name, email, password) {
+        try {
+          const users = this.getAll();
+          if (this.findByEmail(email)) return { ok: false, error: 'email_exists' };
+          const user = {
+            id: Date.now(), name, email, password,
+            createdAt: new Date().toISOString(),
+            surveyCompleted: false, surveyData: null
+          };
+          users.push(user);
+          if (!this.saveAll(users)) return { ok: false, error: 'storage_error' };
+          this.setSession({ id: user.id, email: user.email, name: user.name });
+          return { ok: true, user };
+        } catch(e) { return { ok: false, error: 'storage_error' }; }
+      },
+      login(email, password) {
+        try {
+          const user = this.findByEmail(email);
+          if (!user) return { ok: false, error: 'not_found' };
+          if (user.password !== password) return { ok: false, error: 'wrong_password', name: user.name };
+          this.setSession({ id: user.id, email: user.email, name: user.name });
+          return { ok: true, user };
+        } catch(e) { return { ok: false, error: 'storage_error' }; }
+      },
+      saveSurvey(userId, surveyData) {
+        try {
+          const users = this.getAll();
+          const idx = users.findIndex(u => u.id === userId);
+          if (idx === -1) return false;
+          users[idx].surveyCompleted = true;
+          users[idx].surveyData = surveyData;
+          return this.saveAll(users);
+        } catch(e) { return false; }
+      },
+      deleteUser(id) {
+        try { this.saveAll(this.getAll().filter(u => u.id !== id)); } catch(e) {}
+      },
+      setSession(data) {
+        try { localStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch(e) {}
+      },
+      getSession() {
+        try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e) { return null; }
+      },
+      logout() {
+        try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
+      }
+    };
+
+    // ══════════════════════════════════════════
+    // UI LOGIC
+    // ══════════════════════════════════════════
+    let currentRole = 'user';
+
+    function switchRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.role === role);
+      });
+      document.body.classList.toggle('admin-mode', role === 'admin');
+    }
+
+    function showRegister() {
+      document.getElementById('loginView').classList.remove('active');
+      document.getElementById('registerView').classList.add('active');
+      clearAllErrors();
+      document.getElementById('rightPanel').scrollTop = 0;
+    }
+
+    function showLogin() {
+      document.getElementById('registerView').classList.remove('active');
+      document.getElementById('loginView').classList.add('active');
+      document.getElementById('registerForm').style.display = 'block';
+      document.getElementById('successMsg').style.display = 'none';
+      clearAllErrors();
+      document.getElementById('rightPanel').scrollTop = 0;
+    }
+
+    // ── ERROR HELPERS ──
+    function showError(el, msg) {
+      clearError(el);
+      el.classList.add('input-error');
+      const div = document.createElement('div');
+      div.className = 'error-msg';
+      div.innerHTML = '<span class="err-badge">!</span>' + msg;
+      el.parentElement.appendChild(div);
+    }
+    function clearError(el) {
+      el.classList.remove('input-error');
+      const e = el.parentElement.querySelector('.error-msg');
+      if (e) e.remove();
+    }
+    function clearAllErrors() {
+      document.querySelectorAll('.input-error').forEach(e => e.classList.remove('input-error'));
+      document.querySelectorAll('.error-msg, .form-banner').forEach(e => e.remove());
+    }
+    function showBanner(containerId, msg, type) {
+      const c = document.getElementById(containerId);
+      c.querySelectorAll('.form-banner').forEach(b => b.remove());
+      const b = document.createElement('div');
+      b.className = 'form-banner form-banner-' + type;
+      b.innerHTML = msg;
+      c.insertBefore(b, c.firstChild);
+    }
+
+    // ── LOGIN ──
+    function handleLogin() {
+      clearAllErrors();
+      const emailEl = document.getElementById('loginEmail');
+      const passEl  = document.getElementById('loginPassword');
+      let ok = true;
+      if (!emailEl.value.trim()) { showError(emailEl, 'Email is required.'); ok = false; }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) { showError(emailEl, 'Enter a valid email.'); ok = false; }
+      if (!passEl.value.trim()) { showError(passEl, 'Password is required.'); ok = false; }
+      if (!ok) return;
+
+      if (currentRole === 'admin') {
+        if (emailEl.value.trim() === 'admin@hostelhub.com' && passEl.value === 'admin123') {
+          try { localStorage.setItem('hostelhub_session', JSON.stringify({id:'admin',role:'admin',name:'Admin',email:'admin@hostelhub.com'})); } catch(e) {}
+          window.location.href = '../admin page/admin.html';
+        } else {
+          showBanner('loginView', 'Invalid admin credentials.', 'error');
+        }
+        return;
+      }
+
+      const result = DB.login(emailEl.value.trim(), passEl.value);
+      if (result.ok) {
+        // If survey already completed → go straight to user dashboard
+        // If not yet completed → go to survey first
+        if (result.user && result.user.surveyCompleted) {
+          window.location.href = '../User Page/user.html';
+        } else {
+          window.location.href = 'survey.html';
+        }
+        return;
+      }
+      if (result.error === 'not_found') {
+        showBanner('loginView', 'No account found for <strong>' + emailEl.value.trim() + '</strong>. <a href="#" onclick="showRegister();return false;">Create an account</a> to login.', 'error');
+      } else if (result.error === 'wrong_password') {
+        showBanner('loginView', 'Incorrect password for <strong>' + result.name + '</strong>. Please try again.', 'error');
+        showError(passEl, 'Incorrect password.');
+      } else {
+        showBanner('loginView', 'Something went wrong. Please try again.', 'error');
+      }
+    }
+
+    // ── REGISTER ──
+    function handleRegister() {
+      clearAllErrors();
+      const nameEl    = document.getElementById('regName');
+      const emailEl   = document.getElementById('regEmail');
+      const passEl    = document.getElementById('regPassword');
+      const confirmEl = document.getElementById('regConfirmPassword');
+      let ok = true;
+
+      if (!nameEl.value.trim())    { showError(nameEl, 'Full name is required.'); ok = false; }
+      if (!emailEl.value.trim())   { showError(emailEl, 'Email is required.'); ok = false; }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) { showError(emailEl, 'Enter a valid email.'); ok = false; }
+      if (!passEl.value.trim())    { showError(passEl, 'Password is required.'); ok = false; }
+      else if (passEl.value.length < 6) { showError(passEl, 'Minimum 6 characters.'); ok = false; }
+      if (!confirmEl.value.trim()) { showError(confirmEl, 'Please confirm your password.'); ok = false; }
+      else if (confirmEl.value !== passEl.value) { showError(confirmEl, 'Passwords do not match.'); ok = false; }
+      if (!ok) return;
+
+      const result = DB.register(nameEl.value.trim(), emailEl.value.trim(), passEl.value);
+
+      if (result.ok) {
+        // Show brief success then redirect
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'flex';
+        setTimeout(function() {
+          window.location.href = 'survey.html';
+        }, 800);
+        return;
+      }
+
+      if (result.error === 'email_exists') {
+        showError(emailEl, 'This email is already registered. Please sign in.');
+      } else {
+        showBanner('registerForm', 'Unable to save — please make sure your browser allows local storage, or try Chrome/Edge.', 'error');
+      }
+    }
+
+    // ── PASSWORD STRENGTH ──
+    function checkStrength(val) {
+      const bars  = ['bar1','bar2','bar3','bar4'].map(id => document.getElementById(id));
+      const label = document.getElementById('strengthLabel');
+      bars.forEach(b => b.className = 'strength-bar');
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 10) score++;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const cls  = ['','weak','fair','fair','strong'];
+      const lbls = ['Enter a password','Weak','Fair','Good','Strong'];
+      const clrs = ['#b0b7c3','#ef4444','#f97316','#f97316','#22c55e'];
+      for (let i = 0; i < score; i++) bars[i].classList.add(cls[score]);
+      label.textContent = val.length === 0 ? 'Enter a password' : lbls[score];
+      label.style.color = clrs[score];
+    }
+
+    // ── CLEAR ON INPUT ──
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('input').forEach(function(input) {
+        input.addEventListener('input', function() { clearError(input); });
+      });
+    });
+  </script>
+</body>
+</html>

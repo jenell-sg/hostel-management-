@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub — Student Onboarding</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="survey.css" />
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">H</div>
+      <span>HostelHub</span>
+    </div>
+    <div class="topbar-step-label" id="topStepLabel">Step 1 of 6</div>
+  </header>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <!-- MAIN WRAPPER -->
+  <main class="survey-main">
+
+    <!-- LEFT: Stage Navigator -->
+    <aside class="stage-nav">
+      <p class="stage-nav-title">Your Journey</p>
+      <ul class="stage-list" id="stageList">
+        <li class="stage-item active" data-step="1">
+          <div class="stage-dot"><span>1</span></div>
+          <div class="stage-info">
+            <div class="stage-name">Personal Details</div>
+            <div class="stage-desc">Identity &amp; contact</div>
+          </div>
+        </li>
+        <li class="stage-item" data-step="2">
+          <div class="stage-dot"><span>2</span></div>
+          <div class="stage-info">
+            <div class="stage-name">Academic Details</div>
+            <div class="stage-desc">Course &amp; semester</div>
+          </div>
+        </li>
+        <li class="stage-item" data-step="3">
+          <div class="stage-dot"><span>3</span></div>
+          <div class="stage-info">
+            <div class="stage-name">Hostel Preferences</div>
+            <div class="stage-desc">Room &amp; floor</div>
+          </div>
+        </li>
+        <li class="stage-item" data-step="4">
+          <div class="stage-dot"><span>4</span></div>
+          <div class="stage-info">
+            <div class="stage-name">Food Preferences</div>
+            <div class="stage-desc">Mess &amp; diet</div>
+          </div>
+        </li>
+        <li class="stage-item" data-step="5">
+          <div class="stage-dot"><span>5</span></div>
+          <div class="stage-info">
+            <div class="stage-name">Address &amp; Emergency</div>
+            <div class="stage-desc">Guardian info</div>
+          </div>
+        </li>
+        <li class="stage-item" data-step="6">
+          <div class="stage-dot"><span>6</span></div>
+          <div class="stage-info">
+            <div class="stage-name">Health &amp; Safety</div>
+            <div class="stage-desc">Medical &amp; allergies</div>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- RIGHT: Form Panels -->
+    <section class="form-area">
+
+      <!-- STEP 1: Personal Details -->
+      <div class="step-panel active" id="step1">
+        <div class="step-header">
+          <div class="step-badge">01</div>
+          <div>
+            <h2>Basic Personal Details</h2>
+            <p>Tell us who you are — this helps us set up your profile.</p>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Full Name <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s1-name" placeholder="e.g. Arjun Kumar" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Roll / Register Number <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s1-roll" placeholder="e.g. 22CS001" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Email ID <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="email" id="s1-email" placeholder="you@college.edu" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Mobile Number <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="tel" id="s1-mobile" placeholder="+91 98765 43210" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Gender <span class="req">*</span></label>
+            <div class="chip-group">
+              <label class="chip"><input type="radio" name="gender" value="male" /><span>Male</span></label>
+              <label class="chip"><input type="radio" name="gender" value="female" /><span>Female</span></label>
+              <label class="chip"><input type="radio" name="gender" value="other" /><span>Other</span></label>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Date of Birth <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="date" id="s1-dob" />
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <div></div>
+          <button class="btn-next" onclick="nextStep()">Continue <span class="arrow">&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Academic Details -->
+      <div class="step-panel" id="step2">
+        <div class="step-header">
+          <div class="step-badge">02</div>
+          <div>
+            <h2>Academic Details</h2>
+            <p>Used for hostel allocation and official records.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field-group span-2">
+            <label>College / University Name <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s2-college" placeholder="e.g. Anna University" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Department <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s2-dept" placeholder="e.g. Computer Science" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Course / Program <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s2-course" placeholder="e.g. B.Tech, M.Sc" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Semester / Year <span class="req">*</span></label>
+            <div class="field-wrap">
+              <select id="s2-sem">
+                <option value="">Select semester</option>
+                <option>Semester 1</option>
+                <option>Semester 2</option>
+                <option>Semester 3</option>
+                <option>Semester 4</option>
+                <option>Semester 5</option>
+                <option>Semester 6</option>
+                <option>Semester 7</option>
+                <option>Semester 8</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Academic Year <span class="req">*</span></label>
+            <div class="field-wrap">
+              <select id="s2-year">
+                <option value="">Select year</option>
+                <option>2024&ndash;2025</option>
+                <option>2025&ndash;2026</option>
+                <option>2026&ndash;2027</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-back" onclick="prevStep()"><span class="arrow">&larr;</span> Back</button>
+          <button class="btn-next" onclick="nextStep()">Continue <span class="arrow">&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Hostel Preferences -->
+      <div class="step-panel" id="step3">
+        <div class="step-header">
+          <div class="step-badge">03</div>
+          <div>
+            <h2>Hostel Preferences</h2>
+            <p>Help us allocate the right room for you.</p>
+          </div>
+        </div>
+
+        <div class="pref-section">
+          <div class="pref-label">Hostel Type <span class="req">*</span></div>
+          <div class="chip-group large">
+            <label class="chip"><input type="radio" name="hostelType" value="boys" /><span>Boys Hostel</span></label>
+            <label class="chip"><input type="radio" name="hostelType" value="girls" /><span>Girls Hostel</span></label>
+          </div>
+        </div>
+
+        <div class="pref-section">
+          <div class="pref-label">Room Type <span class="req">*</span></div>
+          <div class="chip-group large">
+            <label class="chip"><input type="radio" name="roomType" value="ac" /><span>AC Room</span></label>
+            <label class="chip"><input type="radio" name="roomType" value="nonac" /><span>Non-AC Room</span></label>
+          </div>
+        </div>
+
+        <div class="pref-section">
+          <div class="pref-label">Sharing Preference <span class="req">*</span></div>
+          <div class="chip-group large">
+            <label class="chip"><input type="radio" name="sharing" value="single" /><span>Single</span></label>
+            <label class="chip"><input type="radio" name="sharing" value="double" /><span>Double</span></label>
+            <label class="chip"><input type="radio" name="sharing" value="triple" /><span>Triple</span></label>
+          </div>
+        </div>
+
+        <div class="pref-section">
+          <div class="pref-label">Floor Preference <span class="opt">(optional)</span></div>
+          <div class="chip-group large" id="floorOptionsContainer">
+             <div style="font-size:13.5px; color:var(--text-muted); padding:8px 4px;">Please select Hostel, Room Type, and Sharing to see available floors.</div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-back" onclick="prevStep()"><span class="arrow">&larr;</span> Back</button>
+          <button class="btn-next" onclick="nextStep()">Continue <span class="arrow">&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Food Preferences -->
+      <div class="step-panel" id="step4">
+        <div class="step-header">
+          <div class="step-badge">04</div>
+          <div>
+            <h2>Food Preferences</h2>
+            <p>Helps us plan the mess menu and manage dietary needs.</p>
+          </div>
+        </div>
+
+        <div class="pref-section">
+          <div class="pref-label">Food Type <span class="req">*</span></div>
+          <div class="food-cards">
+            <label class="food-card">
+              <input type="radio" name="food" value="veg" />
+              <div class="food-card-inner">
+                <div class="food-title">Vegetarian</div>
+                <div class="food-desc">Plant-based meals, no meat or fish</div>
+              </div>
+            </label>
+            <label class="food-card">
+              <input type="radio" name="food" value="nonveg" />
+              <div class="food-card-inner">
+                <div class="food-title">Non-Vegetarian</div>
+                <div class="food-desc">Includes meat, fish, and eggs</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-back" onclick="prevStep()"><span class="arrow">&larr;</span> Back</button>
+          <button class="btn-next" onclick="nextStep()">Continue <span class="arrow">&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Address & Emergency -->
+      <div class="step-panel" id="step5">
+        <div class="step-header">
+          <div class="step-badge">05</div>
+          <div>
+            <h2>Address &amp; Emergency Details</h2>
+            <p>For safety, communication, and official correspondence.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field-group span-2">
+            <label>Permanent Address <span class="req">*</span></label>
+            <div class="field-wrap">
+              <textarea id="s5-address" rows="2" placeholder="House / Door No., Street, Area..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>City <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s5-city" placeholder="e.g. Chennai" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>State <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s5-state" placeholder="e.g. Tamil Nadu" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Pincode <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s5-pincode" placeholder="e.g. 600001" maxlength="6" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Relationship with Guardian <span class="req">*</span></label>
+            <div class="field-wrap">
+              <select id="s5-relation">
+                <option value="">Select relationship</option>
+                <option>Father</option>
+                <option>Mother</option>
+                <option>Sibling</option>
+                <option>Spouse</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Parent / Guardian Name <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="text" id="s5-guardian" placeholder="Full name" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Guardian Contact Number <span class="req">*</span></label>
+            <div class="field-wrap">
+              <input type="tel" id="s5-gcontact" placeholder="+91 98765 43210" />
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-back" onclick="prevStep()"><span class="arrow">&larr;</span> Back</button>
+          <button class="btn-next" onclick="nextStep()">Continue <span class="arrow">&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 6: Health & Safety (all optional) -->
+      <div class="step-panel" id="step6">
+        <div class="step-header">
+          <div class="step-badge">06</div>
+          <div>
+            <h2>Health &amp; Safety Details</h2>
+            <p>Optional — helps us respond quickly in emergencies.</p>
+          </div>
+        </div>
+
+        <div class="optional-banner">
+          &#9432; All fields on this page are optional, but highly recommended for your safety.
+        </div>
+
+        <div class="form-grid two-col">
+          <div class="field-group">
+            <label>Blood Group</label>
+            <div class="field-wrap">
+              <select id="s6-blood">
+                <option value="">Select blood group</option>
+                <option>A+</option><option>A&minus;</option>
+                <option>B+</option><option>B&minus;</option>
+                <option>AB+</option><option>AB&minus;</option>
+                <option>O+</option><option>O&minus;</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Allergies (if any)</label>
+            <div class="field-wrap">
+              <input type="text" id="s6-allergies" placeholder="e.g. Peanuts, Dust, Pollen" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field-group span-2">
+            <label>Known Medical Conditions</label>
+            <div class="field-wrap">
+              <textarea id="s6-medical" rows="3" placeholder="e.g. Asthma, Diabetes... or leave blank if none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-back" onclick="prevStep()"><span class="arrow">&larr;</span> Back</button>
+          <button class="btn-submit" onclick="submitSurvey()">Submit Application</button>
+        </div>
+      </div>
+
+      <!-- SUCCESS SCREEN -->
+      <div class="step-panel" id="stepDone">
+        <div class="success-screen">
+          <div class="success-ring">
+            <div class="success-circle">&#10003;</div>
+          </div>
+          <h2>Application Submitted!</h2>
+          <p>Welcome to HostelHub!<br/>Your hostel application is under review. Redirecting to your dashboard...</p>
+          <div class="success-meta">
+            <div class="meta-chip">Application ID: <strong>#HH-2025-00142</strong></div>
+            <div class="meta-chip">Confirmation sent to your email</div>
+          </div>
+          <a href="../User Page/user.html" class="btn-home">&larr; Go to Dashboard</a>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="../Database Page/db.js"></script>
+  <script src="survey.js"></script>
+</body>
+</html>

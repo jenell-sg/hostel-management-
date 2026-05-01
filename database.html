@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelHub — Admin Database</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="database.css"/>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-icon">H</div>
+      <span>HostelHub</span>
+      <span class="admin-chip">Admin</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-icon" onclick="refreshTable()" title="Refresh">&#8635; Refresh</button>
+      <button class="btn-icon btn-export" onclick="exportJSON()" title="Export">&#8595; Export JSON</button>
+      <button class="btn-icon btn-danger" onclick="confirmClearAll()" title="Clear All">&#128465; Clear All</button>
+      <a href="index.html" class="btn-icon btn-back">&larr; Back to Login</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="db-main">
+
+    <div class="page-title">
+      <h1>User Database</h1>
+      <p>All registered users and their survey status</p>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-num" id="statTotal">0</div>
+      </div>
+      <div class="stat-card stat-card-orange">
+        <div class="stat-label">Surveys Completed</div>
+        <div class="stat-num" id="statCompleted">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending Surveys</div>
+        <div class="stat-num" id="statPending">0</div>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search by name, email or roll number..." oninput="renderTable()"/>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table class="db-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Registered At</th>
+            <th>Survey Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">&#128100;</div>
+        <div class="empty-title">No users found</div>
+        <div class="empty-sub">Registered users will appear here after signing up.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: View Details -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()"></div>
+  <div class="modal" id="detailModal">
+    <div class="modal-header">
+      <h3 id="modalTitle">User Details</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+
+  <!-- CONFIRM DIALOG -->
+  <div class="modal-backdrop" id="confirmBackdrop"></div>
+  <div class="modal confirm-modal" id="confirmModal">
+    <div class="modal-header">
+      <h3 id="confirmTitle">Confirm</h3>
+    </div>
+    <div class="modal-body" id="confirmBody"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-confirm-action" id="confirmAction">Confirm</button>
+    </div>
+  </div>
+
+  <script src="db.js"></script>
+  <script src="database.js"></script>
+</body>
+</html>
